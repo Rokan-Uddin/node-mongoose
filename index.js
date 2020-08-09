@@ -7,17 +7,36 @@ connect.then((db) => {
 
     console.log('Connected correctly to server');
 
-    Dishes.create({
+ Dishes.create({
         name: 'Rokan Uddin',
-        description: 'Test'
+        description: 'test'
     })
     .then((dish) => {
         console.log(dish);
-        
-        return Dishes.find({}).exec();
+
+        return Dishes.findByIdAndUpdate(dish._id, 
+            {
+                $set: { description: 'Updated test'}
+            },
+            { 
+                new: true 
+            }
+        )
+        .exec();
     })
-    .then((dishes) => {
-        console.log(dishes);
+    .then((dish) => {
+        console.log(dish);
+
+        dish.comments.push({
+            rating: 5,
+            comment: 'I\'m getting a sinking feeling!',
+            author: 'MD Rokan Uddin'
+        });
+
+        return dish.save();
+    })
+    .then((dish) => {
+        console.log(dish);
 
         return Dishes.remove({});
     })
@@ -26,6 +45,6 @@ connect.then((db) => {
     })
     .catch((err) => {
         console.log(err);
-    })
+    });
 
 });
